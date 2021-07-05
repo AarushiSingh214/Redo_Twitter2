@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -51,10 +52,10 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "onSuccess" + json.toString());
                 JSONArray jsonArray = json.jsonArray;
-                try{
+                try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
-                }catch(JSONException e){
+                } catch (JSONException e) {
                     Log.e(TAG, "Json execption", e);
                 }
             }
@@ -65,5 +66,18 @@ public class TimelineActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void onLogoutButton(){
+        //forget who's logged in
+        TwitterApp.getRestClient(this).clearAccessToken();
+
+        //navigate back to the login screen
+        Intent i = new Intent(this, LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // this makes sure the Back button won't work
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // same as above
+        startActivity(i);
+
     }
 }
