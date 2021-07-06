@@ -19,6 +19,7 @@ import java.util.List;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
 
+    //private static final int GONE = 2;
     Context context;
     List<Tweet> tweets;
 
@@ -49,6 +50,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         return tweets.size();
     }
 
+    // Clean all elements of the recycler
+    public void clear() {
+        tweets.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Tweet> list) {
+        tweets.addAll(list);
+        notifyDataSetChanged();
+    }
+
     //pass in the context and list of tweets
 
     //for each row, inflate the layout
@@ -61,18 +74,31 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
+        ImageView ivUrl;
+        TextView tvTime;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            ivUrl = itemView.findViewById(R.id.ivUrl);
+            tvTime = itemView.findViewById(R.id.tvTime);
         }
 
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
             Glide.with(context).load(tweet.user.profileImageUrl).into(ivProfileImage);
+
+            if (tweet.mediaUrl.equals("")){
+                ivUrl.setVisibility(View.GONE);
+            }else{
+                Glide.with(context).load(tweet.mediaUrl).into(ivUrl);
+                ivUrl.setVisibility(View.VISIBLE);
+            }
+
+            tvTime.setText(tweet.createdAt);
         }
     }
 
